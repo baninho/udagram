@@ -18,8 +18,8 @@ COPY . .
 # Build frontend app
 RUN ionic build
 
-# Set the API’s port number
+# Set the frontend port number
 EXPOSE 8100
 
 # Define Docker’s behavior when the image is run
-CMD ionic serve
+CMD ionic serve --external
