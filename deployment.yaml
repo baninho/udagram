@@ -1,0 +1,97 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: udagram-feed
+  labels:
+    app: udagram-feed
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: udagram-feed
+  template:
+    metadata:
+      labels:
+        app: udagram-feed
+    spec:
+      containers:
+      - name: udagram-feed
+        image: baninho/udagram-feed:latest
+        ports:
+        - containerPort: 8080
+        envFrom:
+        - secretRef: 
+            name: mysecret
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: udagram-users
+  labels:
+    app: udagram-users
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: udagram-users
+  template:
+    metadata:
+      labels:
+        app: udagram-users
+    spec:
+      containers:
+      - name: udagram-users
+        image: baninho/udagram-users:latest
+        ports:
+        - containerPort: 8080
+        envFrom:
+        - secretRef: 
+            name: mysecret
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: udagram-proxy
+  name: udagram-proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: udagram-proxy
+  template:
+    metadata:
+      labels:
+        app: udagram-proxy
+        service: udagram-proxy
+    spec:
+      containers:
+      - image: baninho/udagram-proxy
+        name: udagram-proxy
+        imagePullPolicy: Always   
+        ports:
+        - containerPort: 8080
+      restartPolicy: Always
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: udagram-frontend
+  labels:
+    app: udagram-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: udagram-frontend
+  template:
+    metadata:
+      labels:
+        app: udagram-frontend
+    spec:
+      containers:
+      - name: udagram-frontend
+        image: baninho/udagram-frontend
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80

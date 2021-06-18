@@ -2,4 +2,4 @@ set_env.sh
 .DS_Store
 yarn.lock
 *lock.json
-deployment.yaml
+secrets.yaml
